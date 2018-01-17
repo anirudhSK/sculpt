@@ -10,12 +10,12 @@ pub trait Parsing where Self: Sized {
 }
 
 impl Parsing for Identifier {
-  fn parse(mut token_vector : Vec<Token>) -> Result<Identifier, &'static str> {
+  fn parse(token_vector : Vec<Token>) -> Result<Identifier, &'static str> {
     assert_eq!(token_vector.len(), 1, "token_vector too long for Identifier");
-    let identifier_token = token_vector.remove(0);
-    match identifier_token {
-      Token::Identifier(s) => Ok(Identifier::Identifier(s)),
-      _                    => Err("Invalid Identifier ")
+    let identifier_token = & token_vector[0];
+    match *identifier_token {
+      Token::Identifier(ref s)   => Ok(Identifier::Identifier(s.clone())),
+      _                          => Err("Invalid Identifier ")
     }
   }
 }
