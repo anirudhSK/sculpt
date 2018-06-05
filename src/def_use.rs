@@ -16,6 +16,10 @@ pub struct VariableMetadata<'a> {
   var_state : VarState
 }
 
+impl <'a> VariableMetadata<'a> {
+  pub fn get_var_type(&self) -> &'a VarType { self.var_type }
+}
+
 pub struct DefUse<'a> {
   current_snippet : &'a str,
   symbol_table    : HashMap<&'a str, HashMap<&'a str, VariableMetadata<'a>>>,

@@ -23,6 +23,16 @@ impl<'a> CodeGen<'a> {
   pub fn new(t_snippet_name : &'a str, t_symbol_table : &'a HashMap<&'a str, VariableMetadata<'a>>) -> CodeGen<'a> {
     CodeGen{snippet_name : t_snippet_name, generated_string : "".to_string(), snippet_symbol_table : t_symbol_table}
   }
+
+  fn get_vars(&self, t_type_qualifier : TypeQualifier) -> HashMap<&'a str, &'a VariableMetadata<'a>> {
+    let mut ret = HashMap::<&'a str, &'a VariableMetadata<'a>>::new();
+    for (variable, metadata) in self.snippet_symbol_table {
+      if metadata.get_var_type().type_qualifier == t_type_qualifier {
+        ret.insert(variable, metadata);
+      }
+    }
+    return ret;
+  }
 }
 
 impl<'a> TreeFold<'a> for  CodeGen<'a> {
@@ -31,7 +41,10 @@ impl<'a> TreeFold<'a> for  CodeGen<'a> {
       println!("Visit found snippet of interest.");
       self.generated_string.push_str("module ");
       self.generated_string.push_str(tree.snippet_id.get_str());
-      self.generated_string.push_str("()\n");
+      self.generated_string.push_str("(");
+      let _input_vars = self.get_vars(TypeQualifier::Input);
+      let _output_vars = self.get_vars(TypeQualifier::Output);
+      self.generated_string.push_str("\n");
       self.generated_string.push_str("\nendmodule");
     }
   }
