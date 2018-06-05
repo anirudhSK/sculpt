@@ -10,15 +10,18 @@
 // Generate everything (top file, clk, xdc file, tcl script) that is required to test a single snippet.
 use grammar::*;
 use tree_fold::TreeFold;
+use def_use::VariableMetadata;
+use std::collections::HashMap;
 
 pub struct CodeGen<'a> {
   snippet_name : &'a str,
-  generated_string : String
+  generated_string : String,
+  snippet_symbol_table : &'a HashMap<&'a str, VariableMetadata<'a>>
 }
 
 impl<'a> CodeGen<'a> {
-  pub fn new(t_snippet_name : &'a str) -> CodeGen<'a> {
-    CodeGen{snippet_name : t_snippet_name, generated_string : "".to_string()}
+  pub fn new(t_snippet_name : &'a str, t_symbol_table : &'a HashMap<&'a str, VariableMetadata<'a>>) -> CodeGen<'a> {
+    CodeGen{snippet_name : t_snippet_name, generated_string : "".to_string(), snippet_symbol_table : t_symbol_table}
   }
 }
 
@@ -57,7 +60,7 @@ mod tests {
     def_use.visit_prog(&parse_tree);
 
     // Run code generator
-    let mut code_gen = CodeGen::new("fun");
+    let mut code_gen = CodeGen::new("fun", def_use.get_symbol_table("fun"));
     code_gen.visit_prog(&parse_tree);
   }
 

@@ -23,12 +23,13 @@ pub struct DefUse<'a> {
 }
 
 impl<'a> DefUse<'a> {
-  pub fn get_symbol_table(&'a self) -> &'a HashMap<&'a str, VariableMetadata<'a>> {
-    self.symbol_table.get(self.current_snippet).unwrap()
+  pub fn get_symbol_table(&'a self, snippet : &'a str) -> &'a HashMap<&'a str, VariableMetadata<'a>> {
+    self.symbol_table.get(snippet).unwrap()
   }
 
+
   pub fn is_defined(&'a self, id_name : &'a str) -> bool {
-    let sym_table = self.get_symbol_table();
+    let sym_table = self.get_symbol_table(self.current_snippet);
     if sym_table.get(id_name).is_none() {
       // It's not even declared
       return false;
