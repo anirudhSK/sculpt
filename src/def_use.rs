@@ -89,7 +89,9 @@ impl<'a> TreeFold<'a> for DefUse<'a> {
     let id_name =
       match &tree.lvalue {
         &LValue::Scalar(ref identifier) => { identifier.id_name },
-        &LValue::Array(ref identifier, _) => { identifier.id_name }
+        TODO: Handle fields in def_use.rs appropriately.
+        &LValue::Array(ref identifier, _) => { identifier.id_name },
+        &LValue::Field(ref identifier, _) => { identifier.id_name }
       };
 
     // First visit expression because that is conceptually processed first

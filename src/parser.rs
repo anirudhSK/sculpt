@@ -266,10 +266,15 @@ fn parse_identifier<'a>(token_iter : &mut TokenIterator<'a>) -> Identifier<'a> {
 fn parse_lvalue<'a>(token_iter : &mut TokenIterator<'a>) -> LValue<'a> {
   let lvalue_token = token_iter.next().unwrap();
   let is_square_left = |token| { match token { &Token::SquareLeft => true, _ => false, } };
+  let is_dot         = |token| { match token { &Token::Dot        => true, _ => false, } };
   match lvalue_token {
     & Token::Identifier(id_name) => {
-      if token_iter.peek().is_none() || !is_square_left(token_iter.peek().unwrap()) {
+      if token_iter.peek().is_none() || !(is_square_left(token_iter.peek().unwrap()) || is_dot(token_iter.peek().unwrap())) {
         return LValue::Scalar(Identifier{id_name});
+      } else if is_dot(token_iter.peek().unwrap()) {
+        match_token(token_iter, Token::Dot, "Expected . here.");
+        let field_name = parse_identifier(token_iter);
+        return LValue::Field(Identifier{id_name}, field_name);
       } else {
         match_token(token_iter, Token::SquareLeft, "Expected [ here.");
         let array_address = parse_operand(token_iter);
@@ -470,4 +475,5 @@ mod tests {
                           }
                           (foo, fun)
                           ", parse_prog, test_parse_prog2);
+  test_parser_success!(r"a.x = 1;", parse_statement, test_parse_dot_operator);
 }

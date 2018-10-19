@@ -177,7 +177,8 @@ impl<'a> Operand<'a> {
 #[derive(PartialEq)]
 pub enum LValue<'a> {
   Scalar(Identifier<'a>),
-  Array(Identifier<'a>, Box<Operand<'a>>)
+  Array(Identifier<'a>, Box<Operand<'a>>),
+  Field(Identifier<'a>, Identifier<'a>)
 }
 
 impl<'a> LValue<'a> {
@@ -186,6 +187,9 @@ impl<'a> LValue<'a> {
       &LValue::Scalar(ref id) => id.get_str().to_owned(),
       &LValue::Array(ref id, ref address) => {
         id.get_str().to_owned() + " [ " + &address.get_string() + " ] "
+      },
+      &LValue::Field(ref id, ref field_name) => {
+        id.get_str().to_owned() + " . " + &field_name.get_str()
       }
     }
   }
