@@ -49,4 +49,7 @@ pub enum Token<'a> {
 
   // Assignment
   Assign,
+
+  // Dot operator
+  Dot,
 }
