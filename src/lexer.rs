@@ -2,7 +2,7 @@ extern crate regex;
 use self::regex::Regex;
 
 lazy_static! {
-  static ref TOKENS      : Regex = Regex::new(r"[0-9]+|[A-Za-z_][A-Za-z0-9_]*|->|==|!=|>=|<=|>|<|\+|-|/|\*|%|\{|\}|\(|\)|\[|\]|=|;|,|\?|:|\S+|\.").unwrap();
+  static ref TOKENS      : Regex = Regex::new(r"[0-9]+|[A-Za-z_][A-Za-z0-9_]*|->|==|!=|>=|<=|>|<|\+|-|/|\*|%|\{|\}|\(|\)|\[|\]|=|;|,|\?|:|\.|\S+").unwrap();
   static ref KEYWORDS    : Regex = Regex::new(r"^(snippet|and|or|not|persistent|transient|input|output|snippet|const|bit)$").unwrap();
   static ref IDENTIFIERS : Regex = Regex::new(r"^[A-Za-z_][A-Za-z0-9_]*$").unwrap();
   static ref VALUES      : Regex = Regex::new(r"^([0-9]+)$").unwrap();
@@ -22,7 +22,7 @@ fn get_single_token(tok_str : &str) -> Token {
      "or"     => Token::BooleanOr,
      "not"    => Token::BooleanNot,
      "bit"    => Token::Bit,
-     _        => panic!("Unrecognized token string: {}", tok_str)
+     _        => panic!("Unrecognized token string found when looking for keyword: {}", tok_str)
     }
   } else if IDENTIFIERS.is_match(tok_str) {
     return Token::Identifier(tok_str);
@@ -58,7 +58,7 @@ fn get_single_token(tok_str : &str) -> Token {
 
       "=" => Token::Assign,
       "." => Token::Dot,
-      _   => panic!("Unrecognized token string: {}", tok_str)
+      _   => panic!("Unrecognized token string found when looking for other tokens: {}", tok_str)
     }
   }
 }
