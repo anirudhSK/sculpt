@@ -269,7 +269,7 @@ fn parse_lvalue<'a>(token_iter : &mut TokenIterator<'a>) -> LValue<'a> {
   match lvalue_token {
     & Token::Identifier(id_name) => {
       if token_iter.peek().is_none() || !is_square_left(token_iter.peek().unwrap()) {
-        return LValue::Identifier(Identifier{id_name});
+        return LValue::Scalar(Identifier{id_name});
       } else {
         match_token(token_iter, Token::SquareLeft, "Expected [ here.");
         let array_address = parse_operand(token_iter);

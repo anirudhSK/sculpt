@@ -82,9 +82,9 @@ pub trait TreeFold<'a> {
 
   fn visit_lvalue(&mut self, tree : &'a LValue) {
     match tree {
-      &LValue::Identifier(ref identifier) => self.visit_identifier(identifier),
-      &LValue::Array(ref array, ref operand) => {
-        self.visit_identifier(array);
+      &LValue::Scalar(ref id) => self.visit_identifier(id),
+      &LValue::Array(ref id, ref operand) => {
+        self.visit_identifier(id);
         self.visit_operand(operand);
       }
     }

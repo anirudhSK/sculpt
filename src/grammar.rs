@@ -144,17 +144,17 @@ pub enum Operand<'a> {
   Value(Value),
 }
 
-impl<'a> Operand<'a>{
-  pub fn is_id(&self) -> bool {
+impl<'a> Operand<'a> {
+  pub fn is_scalar(&self) -> bool {
     match self {
-      &Operand::LValue(LValue::Identifier(_))     => true,
-      _                                           => false
+      &Operand::LValue(LValue::Scalar(_))     => true,
+      _                                       => false
     }
   }
-  pub fn is_val(&self) -> bool { !self.is_id() }
+  pub fn is_val(&self) -> bool { !self.is_scalar() }
   pub fn get_id(&self) -> &str {
     match self {
-      &Operand::LValue(LValue::Identifier(ref id)) => id.get_str(),
+      &Operand::LValue(LValue::Scalar(ref id)) => id.get_str(),
       _ =>  { assert!(false, "Can't call get_id if operand isn't identifier.");"" }
     }
   }
@@ -176,14 +176,14 @@ impl<'a> Operand<'a>{
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub enum LValue<'a> {
-  Identifier(Identifier<'a>),
+  Scalar(Identifier<'a>),
   Array(Identifier<'a>, Box<Operand<'a>>)
 }
 
 impl<'a> LValue<'a> {
   pub fn get_string(&self) -> String {
     match self {
-      &LValue::Identifier(ref id) => id.get_str().to_owned(),
+      &LValue::Scalar(ref id) => id.get_str().to_owned(),
       &LValue::Array(ref id, ref address) => {
         id.get_str().to_owned() + " [ " + &address.get_string() + " ] "
       }

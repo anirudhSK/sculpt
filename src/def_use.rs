@@ -88,7 +88,7 @@ impl<'a> TreeFold<'a> for DefUse<'a> {
   fn visit_statement(&mut self, tree : &'a Statement) {
     let id_name =
       match &tree.lvalue {
-        &LValue::Identifier(ref identifier) => { identifier.id_name },
+        &LValue::Scalar(ref identifier) => { identifier.id_name },
         &LValue::Array(ref identifier, _) => { identifier.id_name }
       };
 
@@ -126,7 +126,7 @@ impl<'a> TreeFold<'a> for DefUse<'a> {
 
   fn visit_expr(&mut self, tree : &'a Expr) {
     // Check def-before-use for first operand
-    if tree.op1.is_id() &&
+    if tree.op1.is_scalar() &&
        !self.is_defined(tree.op1.get_id()) {
       panic!("{} used before definition", &tree.op1.get_id());
     }
@@ -134,18 +134,18 @@ impl<'a> TreeFold<'a> for DefUse<'a> {
     // Check for the remaining operands
     match &tree.expr_right {
       &ExprRight::BinOp(_, ref op2) => {
-        if op2.is_id() &&
+        if op2.is_scalar() &&
            !self.is_defined(op2.get_id()) {
           panic!("{} used before definition", op2.get_id());
         }
       }
       &ExprRight::Cond(ref true_op, ref false_op) => {
-        if true_op.is_id()  &&
+        if true_op.is_scalar()  &&
            !self.is_defined(true_op.get_id()) {
           panic!("{} used before definition", true_op.get_id());
         }
 
-        if false_op.is_id() &&
+        if false_op.is_scalar() &&
            !self.is_defined(false_op.get_id()) {
           panic!("{} used before definition", false_op.get_id());
         }
